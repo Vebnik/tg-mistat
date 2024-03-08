@@ -3,10 +3,12 @@ use teloxide::utils::command::BotCommands;
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase", description = "Commands list:")]
 pub enum Command {
-    #[command(description = "display help.")]
+    #[command(description = "Display help.")]
     Help,
-    #[command(description = "get asic statistic.")]
+    #[command(description = "Get asic statistic.")]
     Stat,
-    #[command(description = "start dialog.")]
-    Start
+    #[command(description = "Start dialog.")]
+    Start,
+    #[command(description = "Get invoice info.")]
+    Invoice
 }

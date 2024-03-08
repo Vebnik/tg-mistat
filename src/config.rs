@@ -6,6 +6,7 @@ pub struct Config {
     pub emcd_key: String,
     pub tg_token: String,
     pub ms_access_key: String,
+    pub asics: Vec<String>
 }
 
 impl Config {
