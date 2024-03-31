@@ -23,3 +23,26 @@ async fn main() {
     log::info!("Expose command");
     Command::repl(bot, handlers).await;
 }
+
+
+// #[tokio::main]
+// async fn main() -> Result<(), ()> {
+//     use std::{io::{Read, Write}, net::TcpStream};
+//     use serde_json::json;
+
+//     let url = format!("{}:{}", "192.168.0.109", 4028);
+//     let mut stream = TcpStream::connect(&url).expect("Error in crate tcp connect");
+
+//     let payload = json!({"cmd": "status"});
+//     let cmd = payload.to_string();
+//     let mut buffer = String::new();
+    
+//     dbg!(&cmd);
+
+//     stream.write(cmd.as_bytes()).unwrap();
+//     stream.read_to_string(&mut buffer).unwrap();
+
+//     dbg!(&buffer);
+
+//     Ok(())
+// }

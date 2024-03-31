@@ -3,6 +3,7 @@ use std::net::TcpStream;
 use serde::{Deserialize, Serialize};
 
 pub struct Client {
+    pub name: String,
     pub addr: String,
     pub port: String,
     pub stream: TcpStream
@@ -33,4 +34,14 @@ pub struct Summary {
     pub fan_out: i32,
     #[serde(alias = "Getworks")]
     pub works: i32
-}   
+}
+
+impl ToString for Command {
+    fn to_string(&self) -> String {
+        match self {
+            Command::Summary => "Summary".to_string(),
+            Command::GetToken => "GetToken".to_string(),
+            Command::Pools => "Pools".to_string(),
+        }
+    }
+}

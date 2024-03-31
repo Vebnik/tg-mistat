@@ -6,21 +6,23 @@ use crate::config::Config;
 use crate::services::emcd::types::Income;
 use crate::services::whatsminer::types::{Client, Summary};
 
-async fn get_workers() -> Vec<Summary> {
+async fn get_workers() -> Vec<(Summary, String)> {
     let cfg = Config::get().await;
 
     let connection_data: Vec<Vec<&str>> = cfg.asics.iter()
         .map(|el| el.split(":").collect()).collect();
 
     let mut clients: Vec<Client> = connection_data.iter()
-        .map(|addr| Client::new(addr[0].to_string(), addr[1].to_string(), false)).collect();
+        .map(|data| {
+            log::info!("{}:{} - {}", data[0].to_string(), data[1].to_string(), data[2].to_string());
+            Client::new(data[0].to_string(), data[1].to_string(), data[2].to_string(), false)
+        }).collect();
 
-    clients.iter_mut().map(|client| client.summary()).collect()
+    clients.iter_mut().map(|client| (client.summary(), client.name.clone())).collect()
 }   
 
 async fn help_cmd(bot: Bot, msg: Message) {
     let text = Command::descriptions().to_string();
-    // let text = String::from("Для получения статистики введи команду - /stat");
 
     match bot.send_message(msg.chat.id, text).await {
         Ok(_) => log::info!("Success cmd -> help"),
@@ -34,13 +36,14 @@ async fn stat_cmd(bot: Bot, msg: Message) {
 
     for (i, worker) in summarys.iter().enumerate() {
             let row = format!(
-                "💻 WORKER {} \n```\nВентилятор (вход): {} rpm\nВентилятор (выход): {} rpm\nТемпература: {} °C\nМощность: {} W\nСкорость: {:.2} TH\n```\n", 
+                "💻 WORKER: `{}` \\({}\\)\n```\nВентилятор (вход): {} rpm\nВентилятор (выход): {} rpm\nТемпература: {} °C\nМощность: {} W\nСкорость: {:.2} TH\n```\n", 
+                worker.1,
                 i,
-                worker.fan_in,
-                worker.fan_out,
-                worker.temp,
-                worker.power,
-                (worker.mhs_av / 1000000.0),
+                worker.0.fan_in,
+                worker.0.fan_out,
+                worker.0.temp,
+                worker.0.power,
+                (worker.0.mhs_av / 1000000.0),
             );
             text.push_str(&row)
     }
